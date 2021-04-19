@@ -6,7 +6,7 @@
     <title>Blogifier</title>
     <base href="/" />
     <link href="admin/css/app.css" rel="stylesheet" />
-    <!--<link href="_content/Blazored.Typeahead/blazored-typeahead.css" rel="stylesheet" />-->
+    <link href="_content/Blazored.Typeahead/blazored-typeahead.css" rel="stylesheet" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="admin/favicons/apple-touch-icon.png?v=2">
     <link rel="icon" type="image/png" sizes="32x32" href="admin/favicons/favicon-32x32.png?v=2">
@@ -23,13 +23,13 @@
 
 <body>
 
-    <div id="app" class="blogifier">
+    <main id="app" class="blogifier">
         <div class="blogifier-loading d-flex">
             <div class="spinner-border text-blogifier m-auto" role="status"></div>
         </div>
-    </div>
+    </main>
 
-    <div  id="blazor-error-ui"  class="blogifier-error">
+    <div id="blazor-error-ui" class="blogifier-error">
         <div class="container d-flex align-items-center">
             <p class="blogifier-error-message">An unhandled error has occurred.</p>
             <button class="blogifier-error-btn reload ms-auto" type="button">
@@ -59,12 +59,13 @@
     <script src="admin/js/frameworks/autosize.min.js"></script>
 
     <script src="admin/js/components.js"></script>
+    <script src="admin/js/editor.js"></script>
     <script src="admin/js/dataService.js"></script>
     <script src="admin/js/fileManager.js"></script>
 
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     <script src="_content/ChartJs.Blazor.Fork/ChartJsBlazorInterop.js"></script>
-
+    <script src="_content/Blazored.Typeahead/blazored-typeahead.js"></script>
 </body>
 </html>

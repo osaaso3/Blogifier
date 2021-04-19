@@ -29,18 +29,17 @@
 @import "include/list";
 @import "include/highlight";
 @import "include/toaster";
+@import "include/codemirror";
+@import "include/editor";
 
 // pages > account
 @import "pages/account/account";
 
 // pages > dashbaord
 @import "pages/dashboard/dashboard";
-@import "pages/dashboard/totals";
 
 // pages > editor
 @import "pages/editor/editor";
-@import "pages/editor/easymde";
-@import "pages/editor/easymde_custom";
 
 // pages > settings
 @import "pages/settings/settings";

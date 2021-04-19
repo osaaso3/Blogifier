@@ -1,15 +1,13 @@
-@page "/admin/editor/{Slug?}/"
+@page "/admin/pages/editor/{Slug?}/"
 @inject HttpClient _http
 @inject IStringLocalizer<Resource> _localizer
 @inject IJSRuntime _jsruntime
 @inject IToaster _toaster
 @inject NavigationManager _navigation
-@inject BlogStateProvider _stateprovider
-@implements IDisposable
 
 <PageTitle Title="@_localizer["Editor"]" />
 
-<div class="editor">
+<div class="app-editor">
     @if (Post != null)
     {
         <div class="editor-actions d-flex">
@@ -55,14 +53,10 @@
         <div class="editor-wrap">
             <div class="editor-header">
                 <img class="editor-cover" src="@Post.Cover" alt="Cover" id="post-cover">
-
                 <div class="editor-header-inner">
-
                     <textarea class="editor-header-textarea editor-header-title autosize" @bind="Post.Title" name="title" placeholder="@_localizer["page-title"]" rows="1" autofocus></textarea>
                     <textarea class="editor-header-textarea editor-header-desc autosize" @bind="Post.Description" name="description" placeholder="@_localizer["description"]..." rows="1"></textarea>
-
                     <div class="editor-meta d-flex">
-
                         <div class="dropdown me-3">
                             <a class="editor-meta-link" href="#" id="coverDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image me-1" viewBox="0 0 16 16">
@@ -81,13 +75,8 @@
                                 </li>
                             </ul>
                         </div>
-
-                        <CategoriesComponent Post="Post" @ref="Categories" />
-
                     </div>
-
                 </div>
-
             </div>
             <div class="editor-editor bf-editor">
                 <EditorComponent Content="@Post.Content" />
@@ -101,15 +90,7 @@
    protected Author Author { get; set; }
    protected Post Post { get; set; }
    protected ToasterComponent Toaster;
-   protected CategoriesComponent Categories;
    protected string Confirm { get; set; }
-   protected string PostTile
-   {
-       get
-       {
-           return _stateprovider.PostType == PostType.Post ? _localizer["post-title"] : _localizer["page-title"];
-       }
-   }
 
    [Parameter]
 #nullable enable
@@ -120,7 +101,6 @@
    {
        Author = await _http.GetFromJsonAsync<Author>("api/author/getcurrent");
        Confirm = _localizer["confirm-delete"];
-       _stateprovider.OnChange += StateHasChanged;
        await Load();
    }
 
@@ -137,10 +117,9 @@
    protected async Task SavePost(PostAction postAction)
    {
        Post.Content = await _jsruntime.InvokeAsync<string>("commonJsFunctions.getEditorValue", "");
-       Post.PostType = _stateprovider.PostType;
+       Post.PostType = PostType.Page;
 
        Post.Cover = await _jsruntime.InvokeAsync<string>("commonJsFunctions.getSrcValue", "post-cover");
-
        if(string.IsNullOrEmpty(Post.Cover))
            Post.Cover = Constants.DefaultCover;
 
@@ -162,31 +141,16 @@
        if (Post.Id == 0)
        {
            Post.Slug = await _http.GetStringAsync($"api/post/getslug/{Post.Title}");
-           HttpResponseMessage result = await _http.PostAsJsonAsync<Post>($"api/post/add", Post);
+           Toaster.Toast(await _http.PostAsJsonAsync<Post>($"api/post/add", Post));
 
-           if(result.IsSuccessStatusCode)
-           {
-               Post = await _http.GetFromJsonAsync<Post>($"api/post/byslug/{Post.Slug}");
-               await _http.PutAsJsonAsync<List<Category>>($"api/category/{Post.Id}", Categories.PostCategories);
+           Post = await _http.GetFromJsonAsync<Post>($"api/post/byslug/{Post.Slug}");
 
-               if (postAction == PostAction.Publish)
-               {
-                   await _http.GetFromJsonAsync<bool>($"api/newsletter/send/{Post.Id}");
-               }
-
-               _navigation.NavigateTo($"/admin/editor/{Post.Slug}");
-               await Load();
-           }
-
-           Toaster.Toast(result);
+           _navigation.NavigateTo($"/admin/pages/editor/{Post.Slug}");
+           await Load();
        }
        else
        {
            Toaster.Toast(await _http.PutAsJsonAsync<Post>($"api/post/update", Post));
-
-           await _http.PutAsJsonAsync<List<Category>>($"api/category/{Post.Id}", Categories.PostCategories);
-
-           await _http.GetFromJsonAsync<bool>($"api/newsletter/send/{Post.Id}");
            await Load();
        }
    }
@@ -236,13 +200,8 @@
            Description = "",
            Content = "",
            AuthorId = Author.Id,
-           PostType = PostType.Post,
+           PostType = PostType.Page,
            Cover = Constants.DefaultCover
        };
-   }
-
-   public void Dispose()
-   {
-       _stateprovider.OnChange -= StateHasChanged;
    }
 }
