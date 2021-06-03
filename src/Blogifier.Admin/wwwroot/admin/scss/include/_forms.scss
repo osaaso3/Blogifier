@@ -1,6 +1,13 @@
 .form-control,
 .form-select {
-  box-shadow: $bf-shadow;
+}
+
+.form-switch .form-check-input {
+  border-color: $gray-600;
+  &:checked {
+    border-color: $success;
+    background-color: $success;
+  }
 }
 
 .form-item {
@@ -9,8 +16,8 @@
   .form-label {
     margin-bottom: 0.25rem;
     font-size: 0.875rem;
-    font-weight: 500;
-    color: $gray-700;
+    font-weight: 400;
+    color: $black;
   }
 
   &-desc {
@@ -72,7 +79,7 @@
     overflow: hidden;
     border: 0;
     margin-top: 0.5rem !important;
-    box-shadow: -1rem 1rem 5rem rgba(#000, .25);
+    box-shadow: -1rem 1rem 5rem rgba(#000, 0.25);
   }
   .dropdown-item {
     padding: 0.5rem 1rem;

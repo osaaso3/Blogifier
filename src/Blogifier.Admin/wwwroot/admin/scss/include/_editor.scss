@@ -20,10 +20,9 @@
 .EasyMDEContainer {
   display: block;
   position: relative;
-  margin-bottom: 4rem;
   padding-top: 3rem;
-  @include bf-shadow(0.25rem);
   overflow: hidden;
+  @include bf-shadow;
 }
 
 //
@@ -40,21 +39,26 @@
   z-index: 0;
   word-wrap: break-word;
 }
+
+// hide the CodeMirror-scroll when we are in preview.
+.disabled-for-preview + .CodeMirror > .CodeMirror-scroll {
+  display: none !important;
+}
+
 .CodeMirror-scroll {
   overflow: scroll !important;
-  margin-bottom: -4.0625rem;
-  margin-right: -4.0625rem;
-  padding-bottom: 4.0625rem;
-  padding-right: 1rem;
-  padding: 3rem 4rem 6rem 3rem;
   height: 100%;
   outline: 0;
   position: relative;
   cursor: text;
+  // hide the scrollbar
+  margin-right: -15px;
+  margin-bottom: -15px;
+  padding-bottom: 50px;
 }
 .CodeMirror-sizer {
   position: relative;
-  border-right: 4.0625rem solid transparent;
+  border-right: 0 !important;
 }
 .CodeMirror-hscrollbar,
 .CodeMirror-scrollbar-filler,
@@ -83,6 +87,7 @@
 .CodeMirror-lines {
   cursor: text;
   min-height: 1px;
+  padding: 1rem;
 }
 .CodeMirror pre.CodeMirror-line,
 .CodeMirror pre.CodeMirror-line-like {
@@ -165,10 +170,22 @@ div.CodeMirror-dragcursors {
   right: 0;
   bottom: 0;
   height: auto;
-  z-index: 8;
+  z-index: 15;
   border-right: none !important;
   border-bottom-right-radius: 0 !important;
+
+  @media screen and (min-width: 1024px) {
+    .CodeMirror-lines {
+      padding: 2.5rem 2.5rem 20rem !important;
+    }
+  }
+  @media screen and (max-width: 1023px) {
+    .CodeMirror-lines {
+      padding: 1.5rem 1.5rem 20rem !important;
+    }
+  }
 }
+
 .CodeMirror-sided {
   width: 50% !important;
 }
@@ -193,35 +210,13 @@ div.CodeMirror-dragcursors {
   user-select: none;
   border-bottom: 1px solid $gray-200;
   display: flex;
+  align-items: center;
   z-index: 5;
-  height: 3rem;
+  height: 2.5rem;
 
-  &.-sticky {
-    width: 61rem;
-    position: fixed;
-    top: 0;
-    left: auto;
-    background-color: #fff;
-    border-bottom-color: $gray-100;
-    &::after {
-      content: "";
-      display: block;
-      width: 100%;
-      position: absolute;
-      bottom: -2rem;
-      left: 0;
-      height: 2rem;
-      background-image: linear-gradient(180deg, rgba(#000, 0.1), transparent);
-      z-index: 6;
-    }
-    @media screen and (max-width: 1199px) {
-      width: 100%;
-      left: 0;
-    }
-  }
   &.fullscreen {
     width: 100%;
-    height: 3rem;
+    height: 2.5rem;
     box-sizing: border-box;
     background: #fff;
     position: fixed;
@@ -230,67 +225,87 @@ div.CodeMirror-dragcursors {
     opacity: 1;
     z-index: 100;
     button {
-      height: 3rem;
+      height: 2.5rem;
     }
     &::after {
       content: "";
       display: block;
       width: 100%;
       position: absolute;
-      bottom: -2rem;
+      bottom: -1rem;
       left: 0;
-      height: 2rem;
-      background-image: linear-gradient(180deg, rgba(#000, 0.1), transparent);
+      height: 1rem;
+      background-image: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.1),
+        rgba(0, 0, 0, 0) 30%
+      );
       z-index: 6;
     }
   }
+  i.separator {
+    font-size: 0;
+    width: 1px;
+    height: 100%;
+    background: #e8ecef;
+  }
   button {
+    flex-grow: 1;
+    display: block;
+    text-align: center;
     background: none;
     border: 0;
-    display: inline-block;
-    text-align: center;
-    text-decoration: none !important;
-    height: 3rem;
-    width: 3rem;
+    width: 2.5rem;
+    max-width: 2.5rem;
+    height: 2.5rem;
     margin: 0;
     padding: 0;
     cursor: pointer;
-    flex-grow: 1;
-    border-bottom: 1px solid transparent;
-    border-radius: 0;
 
-    &:not(:last-child) {
-      margin-right: 1px;
-    }
     &:hover {
-      background-color: $gray-100;
-      border-bottom-color: $gray-300;
-
-      .bi {
-        fill: $gray-900;
+      background-color: #f3f5f9;
+      svg {
+        fill: #000;
       }
     }
+
     &.active {
       background-color: rgba($blogifier, 0.1);
-      border-bottom-color: rgba($blogifier, 0.2);
-      .bi {
+      svg {
         fill: $blogifier;
       }
     }
 
-    .bi {
-      fill: $gray-800;
+    svg {
+      fill: $gray-700;
+      transform: translateY(-1px);
     }
   }
   &.disabled-for-preview {
     button:not(.no-disable) {
-      opacity: 0.6;
+      opacity: 0.5;
       pointer-events: none;
       background-color: #fff !important;
       border-bottom-color: transparent !important;
-      .bi {
+      svg {
         fill: $gray-800 !important;
       }
+    }
+  }
+}
+
+.toolbar-sticky {
+  .editor-toolbar {
+    width: 61rem;
+    position: fixed;
+    top: 0;
+    left: auto;
+    background-color: #fff;
+    border-bottom-color: $gray-300;
+
+    @media screen and (max-width: 1199px) {
+      width: 100%;
+      left: 0;
     }
   }
 }
@@ -300,9 +315,48 @@ div.CodeMirror-dragcursors {
 //
 .editor-preview {
   font-size: 1rem;
-  padding: 3rem;
+  padding: 1rem;
   background: #fff;
   line-height: 1.618;
+
+  &-full {
+    width: 100%;
+    height: 100%;
+    z-index: 15;
+    overflow: auto;
+    display: none;
+    box-sizing: border-box;
+  }
+  &-side {
+    position: fixed;
+    bottom: 0;
+    width: 50%;
+    top: 3rem;
+    right: 0;
+    z-index: 15;
+    overflow: auto;
+    display: none;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    border-left: 1px solid $gray-200;
+    @media screen and (min-width: 1024px) {
+      padding: 2.5rem 2.5rem 20rem !important;
+    }
+    @media screen and (max-width: 1023px) {
+      padding: 1.5rem 1.5rem 20rem !important;
+    }
+
+    p {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  &-active-side,
+  &-active {
+    display: block;
+  }
+
   a {
     color: $primary;
     text-decoration: underline;
@@ -370,35 +424,6 @@ div.CodeMirror-dragcursors {
   video {
     margin-bottom: 2rem;
     width: 100%;
-  }
-  &-full {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 7;
-    overflow: auto;
-    display: none;
-    box-sizing: border-box;
-  }
-  &-side {
-    position: fixed;
-    bottom: 0;
-    width: 50%;
-    top: 3rem;
-    right: 0;
-    z-index: 9;
-    overflow: auto;
-    display: none;
-    box-sizing: border-box;
-    word-wrap: break-word;
-    border-left: 1px solid $gray-200;
-    padding-bottom: 7rem;
-  }
-  &-active-side,
-  &-active {
-    display: block;
   }
 }
 

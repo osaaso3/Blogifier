@@ -7,7 +7,7 @@
     https://farzin.dev
 
     Using:
-    - Bootstrap v5.0.0-beta3 (https://getbootstrap.com/)
+    - Bootstrap v5.0 (https://getbootstrap.com/)
 
 */
 
@@ -15,6 +15,7 @@
 @import "helpers/variables";
 @import "helpers/bootstrap";
 @import "helpers/mixins";
+@import "helpers/reset";
 
 // layout
 @import "layout/main";
@@ -30,6 +31,8 @@
 @import "include/highlight";
 @import "include/toaster";
 @import "include/editor";
+@import "include/tooltips";
+@import "include/icons";
 
 // pages > account
 @import "pages/account/account";
@@ -45,5 +48,3 @@
 @import "pages/settings/about";
 @import "pages/settings/themes";
 @import "pages/settings/customize";
-@import "pages/settings/customize_menus";
-@import "pages/settings/customize_widgets";

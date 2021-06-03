@@ -61,15 +61,20 @@ window.commonJsFunctions = {
     document.cookie = name + "=" + value + expires + "; path=/";
   },
   setTooltip: function (args) {
+    let options = {
+      "trigger": "hover",
+      fallbackPlacements: ['bottom']
+    }
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
+      return new bootstrap.Tooltip(tooltipTriggerEl, options)
+    });
   },
-  loadEditor: function () {
-    easymde = getEditor();
+  loadEditor: function (toolbar) {
     autosize(document.querySelectorAll('.autosize'));
-    window.onscroll = function () { stickyToolbar() };
+    easymde = getEditor(toolbar);
+    window.onscroll = function () { stickyToolbar(toolbar) };
+    editorToolbarTooltip();
   },
   setEditorValue: function (txt) {
     easymde.value(txt
